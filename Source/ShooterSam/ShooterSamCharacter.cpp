@@ -65,6 +65,10 @@ void AShooterSamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AShooterSamCharacter::Look);
+
+		//Shooting
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AShooterSamCharacter::Shoot);
+
 	}
 	else
 	{
@@ -76,7 +80,7 @@ void AShooterSamCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	UE_LOG(LogTemp, Warning, TEXT("X value is %f and Y value is %f"), MovementVector.X, MovementVector.Y)
+	//UE_LOG(LogTemp, Warning, TEXT("X value is %f and Y value is %f"), MovementVector.X, MovementVector.Y)
 
 	// route the input
 	DoMove(MovementVector.X, MovementVector.Y);
@@ -87,7 +91,7 @@ void AShooterSamCharacter::Look(const FInputActionValue& Value)
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	UE_LOG(LogTemp, Warning, TEXT("X looking Vector: %f, Y looking Vector: %f"), LookAxisVector.X, LookAxisVector.Y);
+	//UE_LOG(LogTemp, Warning, TEXT("X looking Vector: %f, Y looking Vector: %f"), LookAxisVector.X, LookAxisVector.Y);
 
 	// route the input
 	DoLook(LookAxisVector.X, LookAxisVector.Y);
@@ -133,4 +137,11 @@ void AShooterSamCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void AShooterSamCharacter::Shoot()
+{
+	UE_LOG(LogTemp, Display, TEXT("Shootin'"))
+
+		//Pull the trigger of the gun
 }
