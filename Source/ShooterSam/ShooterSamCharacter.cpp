@@ -50,6 +50,22 @@ AShooterSamCharacter::AShooterSamCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+void AShooterSamCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GetMesh()->HideBoneByName("weapon_r", EPhysBodyOp::PBO_None);
+
+	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
+	if (Gun) 
+	{
+		Gun->SetOwner(this);
+		Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform,
+			TEXT("WeaponSocket"));
+		Gun->OwnerController = GetController();
+	}
+}
+
 void AShooterSamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
@@ -141,7 +157,8 @@ void AShooterSamCharacter::DoJumpEnd()
 
 void AShooterSamCharacter::Shoot()
 {
-	UE_LOG(LogTemp, Display, TEXT("Shootin'"))
-
-		//Pull the trigger of the gun
+	if(Gun)
+	{
+		Gun->PullTrigger();
+	}
 }
