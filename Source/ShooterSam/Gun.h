@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
 #include "Gun.generated.h"
 
 UCLASS()
@@ -28,6 +32,14 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* Mesh;
+
+	//component only
+	UPROPERTY(VisibleAnywhere)
+	UNiagaraComponent* MuzzleFlashParticleSystem;
+
+	//asset only 
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* ImpactParticleSystem;
 
 	UPROPERTY(EditAnywhere)
 	float MaxRange = 10000.0f;
