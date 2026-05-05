@@ -3,6 +3,8 @@
 
 #include "Gun.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AGun::AGun()
 {
@@ -15,7 +17,7 @@ AGun::AGun()
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(SceneRoot);
 
-	MuzzleFlashParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Muzzle Flash"));
+	MuzzleFlashParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleFlash"));
 	MuzzleFlashParticleSystem->SetupAttachment(Mesh);
 
 }
@@ -54,7 +56,15 @@ void AGun::PullTrigger()
 			EndLocation, ECC_GameTraceChannel2, Params);
 		if (IsHit) 
 		{
-			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 5.0f, 16, FColor::Red, true);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), \
+				ImpactParticleSystem, HitResult.ImpactPoint, HitResult.ImpactPoint.Rotation());
+
+			AActor* HitActor = HitResult.GetActor();
+			if (HitActor)
+			{
+				UGameplayStatics::ApplyDamage(HitActor, BulletDamage, OwnerController, 
+					this, UDamageType::StaticClass());
+			}
 		}
 	}
 }
