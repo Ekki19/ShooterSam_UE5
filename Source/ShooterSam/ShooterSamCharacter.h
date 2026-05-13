@@ -112,6 +112,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	float Health;
 
+	UPROPERTY(BlueprintReadOnly)
 	bool IsAlive = true;
 
 	AGun* Gun;
