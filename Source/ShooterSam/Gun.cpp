@@ -4,7 +4,21 @@
 #include "Gun.h"
 
 #include "Kismet/GameplayStatics.h"
+#define WARN(text) UE_LOG(LogTemp, Warning, TEXT(text))
 
+class Shape {
+protected:
+	int32 Sides;
+};
+
+class Rectangle: public Shape {
+public:
+	void SetSides();
+};
+
+void Rectangle::SetSides() {
+	Sides = 4;
+}
 // Sets default values
 AGun::AGun()
 {
@@ -27,6 +41,7 @@ void AGun::BeginPlay()
 {
 	Super::BeginPlay();
 	MuzzleFlashParticleSystem->Deactivate();
+
 }
 
 // Called every frame
@@ -64,6 +79,7 @@ void AGun::PullTrigger()
 			{
 				UGameplayStatics::ApplyDamage(HitActor, BulletDamage, OwnerController, 
 					this, UDamageType::StaticClass());
+				WARN("Enemy has been hit!!")
 			}
 		}
 	}

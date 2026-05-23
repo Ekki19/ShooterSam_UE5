@@ -34,7 +34,6 @@ void AShooterEnemy::BeginPlay()
 
 	OnTakeAnyDamage.AddDynamic(this, &AShooterEnemy::OnDamageTaken);
 	Health = MaxHealth;
-
 	
 }
 
@@ -56,7 +55,7 @@ void AShooterEnemy::OnDamageTaken(AActor* DamagedActor, float Damage, const UDam
 	AController* InstigatedBy, AActor* DamageCauser)
 {
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-	UE_LOG(LogTemp, Display, TEXT("Damage taken: %f"), Damage);
+	//UE_LOG(LogTemp, Display, TEXT("Damage taken: %f"), Damage);
 
 	if (Health <= 0.0f)
 	{
