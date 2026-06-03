@@ -6,19 +6,6 @@
 #include "Kismet/GameplayStatics.h"
 #define WARN(text) UE_LOG(LogTemp, Warning, TEXT(text))
 
-class Shape {
-protected:
-	int32 Sides;
-};
-
-class Rectangle: public Shape {
-public:
-	void SetSides();
-};
-
-void Rectangle::SetSides() {
-	Sides = 4;
-}
 // Sets default values
 AGun::AGun()
 {
@@ -54,6 +41,7 @@ void AGun::Tick(float DeltaTime)
 void AGun::PullTrigger()
 {
 	MuzzleFlashParticleSystem->Activate(true);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShootSound, GetActorLocation());
 
 	if (OwnerController) 
 	{
@@ -73,6 +61,7 @@ void AGun::PullTrigger()
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), \
 				ImpactParticleSystem, HitResult.ImpactPoint, HitResult.ImpactPoint.Rotation());
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, HitResult.ImpactPoint);
 
 			AActor* HitActor = HitResult.GetActor();
 			if (HitActor)

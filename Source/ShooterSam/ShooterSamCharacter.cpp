@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "ShooterSam.h"
+#include "ShooterSamPlayerController.h"
 
 AShooterSamCharacter::AShooterSamCharacter()
 {
@@ -56,6 +57,7 @@ void AShooterSamCharacter::BeginPlay()
 
 	OnTakeAnyDamage.AddDynamic(this, &AShooterSamCharacter::OnDamageTaken);
 	Health = MaxHealth;
+	UpdateHUD();
 
 	GetMesh()->HideBoneByName("weapon_r", EPhysBodyOp::PBO_None);
 
@@ -166,14 +168,27 @@ void AShooterSamCharacter::Shoot()
 	}
 }
 
-void AShooterSamCharacter::OnDamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, 
+void AShooterSamCharacter::UpdateHUD()
+{
+	AShooterSamPlayerController* PlayerController = Cast<AShooterSamPlayerController>(GetController());
+	if (PlayerController)
+	{
+		float NewPercent = Health / MaxHealth;
+		if (NewPercent < 0.0f)
+		{
+			NewPercent = 0.0f;
+		}
+		PlayerController->HUDWidget->SetHealthBarPercent(NewPercent);
+	}
+}
+
+void AShooterSamCharacter::OnDamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (IsAlive) 
 	{
-		UE_LOG(LogTemp, Display, TEXT("Damage taken: %f"), Damage);
-
 		Health = Health - Damage;
+		UpdateHUD();
 		if (Health <= 0.0f)
 		{
 			IsAlive = false;
@@ -181,9 +196,8 @@ void AShooterSamCharacter::OnDamageTaken(AActor* DamagedActor, float Damage, con
 			if (UCapsuleComponent* Capsule = GetCapsuleComponent())
 			{
 				GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			}
-			
-			UE_LOG(LogTemp, Display, TEXT("Character died: %s"), *GetActorNameOrLabel());
+				DetachFromControllerPendingDestroy();
+			}			
 		}
 	}
 }
